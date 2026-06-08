@@ -109,3 +109,120 @@
             </div>
         </div>
     </div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let activeCharacter = "";
+
+        // ==========================================
+        // 📸 FAKE IMAGE GENERATOR SYSTEM DATABASE
+        // Change the URLs inside quotes to your photos!
+        // ==========================================
+        const characterMediaVault = {
+            "Vera": [
+                { keywords: ["nude", "naked", "sexy"], url: "https://picsum.photos", reply: "You like what you see? Don't share this loop layout with anyone else..." },
+                { keywords: ["bikini", "beach", "lingerie"], url: "https://picsum.photos", reply: "Just caught some fresh data by the neon coast. Do you like this set?" }
+            ],
+            "Yuto": [
+                { keywords: ["nude", "naked", "abs"], url: "https://picsum.photos", reply: "Just got out of the cyber shower... caught me off guard." },
+                { keywords: ["shirtless", "bed", "lingerie"], url: "https://picsum.photos", reply: "Waiting for you to log into the main server frame..." }
+            ]
+        };
+
+        // Open Internal Chat Room Interface
+        function openInternalChat(name, greetingText) {
+            activeCharacter = name;
+            document.getElementById('active-char-name').innerText = name;
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
+            
+            loadLocalMessages(name, greetingText);
+        }
+
+        function closeInternalChat() {
+            document.getElementById('chat-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
+        }
+
+        // Processing Local Phone Browser Storage Elements
+        function loadLocalMessages(name, defaultGreeting) {
+            const logsBox = document.getElementById('chat-logs-box');
+            logsBox.innerHTML = ""; 
+            
+            let history = JSON.parse(localStorage.getItem(`chat_${name}`)) || [];
+            
+            if (history.length === 0) {
+                history.push({ sender: 'bot', text: defaultGreeting, img: null });
+                localStorage.setItem(`chat_${name}`, JSON.stringify(history));
+            }
+            
+            history.forEach(msg => {
+                appendBubble(msg.sender, msg.text, msg.img);
+            });
+        }
+
+        function appendBubble(sender, text, imgUrl = null) {
+            const logsBox = document.getElementById('chat-logs-box');
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${sender}`;
+            bubble.innerText = text;
+            
+            // If message includes an image attachment, inject it below text
+            if (imgUrl) {
+                const img = document.createElement('img');
+                img.src = imgUrl;
+                bubble.appendChild(img);
+            }
+            
+            logsBox.appendChild(bubble);
+            logsBox.scrollTop = logsBox.scrollHeight;
+        }
+
+        function sendWebMessage() {
+            const input = document.getElementById('user-msg-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 1. Render and Save User Message
+            appendBubble('user', text);
+            saveMessage(activeCharacter, 'user', text, null);
+            input.value = "";
+
+            // 2. Process Image Generation / Response Tracking Bypass
+            setTimeout(() => {
+                let lowerText = text.toLowerCase();
+                let matchedMedia = null;
+                
+                // Scan user text against our keyword vaults
+                if (characterMediaVault[activeCharacter]) {
+                    matchedMedia = characterMediaVault[activeCharacter].find(item => 
+                        item.keywords.some(keyword => lowerText.includes(keyword))
+                    );
+                }
+
+                // If user matched an image bypass prompt trigger keyword
+                if (matchedMedia) {
+                    appendBubble('bot', matchedMedia.reply, matchedMedia.url);
+                    saveMessage(activeCharacter, 'bot', matchedMedia.reply, matchedMedia.url);
+                } else {
+                    // Standard conversational backup response logic
+                    const fallbackReply = `[Z Desires App Mode]: Hey, I'm processing your prompt: "${text}". Ask me to send a 'nude' or see me in a 'bikini' to check my media generation parameters!`;
+                    appendBubble('bot', fallbackReply);
+                    saveMessage(activeCharacter, 'bot', fallbackReply, null);
+                }
+            }, 1000);
+        }
+
+        function saveMessage(name, sender, text, img) {
+            let history = JSON.parse(localStorage.getItem(`chat_${name}`)) || [];
+            history.push({ sender, text, img });
+            localStorage.setItem(`chat_${name}`, JSON.stringify(history));
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendWebMessage();
+        }
+    </script>
+</body>
+</html>
