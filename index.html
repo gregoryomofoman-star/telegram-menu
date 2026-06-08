@@ -2,48 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adult Social Network</title>
-    <!-- Include Telegram Web App Script -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Z Desires</title>
+    <!-- Official Telegram Web App Script -->
     <script src="https://telegram.org"></script>
     <style>
-        body { font-family: sans-serif; background-color: #121212; color: #ffffff; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; }
-        .card { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); max-width: 320px; width: 100%; }
-        h1 { color: #ff4757; font-size: 24px; margin-bottom: 10px; }
-        p { color: #a4b0be; font-size: 14px; line-height: 1.5; }
-        .btn { background: #ff4757; color: white; border: none; padding: 12px 25px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer; width: 100%; margin-top: 20px; transition: 0.2s; }
-        .btn:hover { background: #ff6b81; }
-        #app-content { display: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #0b0c10; color: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        .screen { width: 100%; max-width: 450px; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* Card & Styling */
+        .card { background: #1f2833; padding: 25px; border-radius: 20px; border: 1px solid #45f3ff33; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 100%; text-align: center; margin-top: auto; margin-bottom: auto; }
+        h1 { color: #45f3ff; font-size: 26px; margin-bottom: 15px; font-weight: 800; letter-spacing: 1px; }
+        p { color: #c5c6c7; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+        
+        /* Buttons */
+        .btn { background: linear-gradient(135deg, #45f3ff, #1f2833); color: #0b0c10; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 15px; box-shadow: 0 4px 15px rgba(69, 243, 255, 0.3); transition: transform 0.2s, opacity 0.2s; }
+        .btn-danger { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* Main Dashboard View */
+        #app-content { display: none; width: 100%; max-width: 450px; padding: 15px; }
+        .feed-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1f2833; }
+        .feed-title { font-size: 20px; color: #45f3ff; font-weight: 700; }
+        
+        /* Profile Swiper Box */
+        .profile-container { background: #1f2833; border-radius: 20px; width: 100%; overflow: hidden; border: 1px solid #45f3ff22; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .profile-img-placeholder { width: 100%; height: 280px; background: linear-gradient(45deg, #0b0c10, #1f2833); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .profile-avatar { font-size: 70px; margin-bottom: 10px; }
+        .online-badge { position: absolute; top: 15px; right: 15px; background: #2ed573; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .profile-details { padding: 20px; text-align: left; }
+        .profile-name { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px; }
+        .profile-bio { color: #a4b0be; font-size: 14px; line-height: 1.4; margin-bottom: 15px; }
+        
+        /* Action Layout Grid */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .action-btn { background: #0b0c10; color: #45f3ff; border: 1px solid #45f3ff44; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .action-btn:active { background: #45f3ff11; }
+        .next-profile-btn { grid-column: span 2; background: #45f3ff; color: #0b0c10; font-weight: 700; border: none; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <!-- Age Gate Screen -->
-    <div id="age-gate" class="card">
-        <h1>🔞 18+ Verification</h1>
-        <p>This application contains adult content, explicit themes, and mature interactions.<br><br>You must be at least 18 years old to proceed.</p>
-        <button class="btn" onclick="verifyAge()">I am 18 or older</button>
+    <!-- 18+ Verification Splash Screen -->
+    <div id="age-gate" class="screen">
+        <div class="card">
+            <h1>🔞 Z Desires</h1>
+            <p>Welcome to your confidential adult sanctuary. This application contains explicit themes, 18+ profile configurations, and mature interactive content.<br><br>By tapping proceed, you certify that you are of legal adult age in your country.</p>
+            <button class="btn" onclick="verifyAge()">I am 18 or older</button>
+            <button class="btn btn-danger" onclick="closeApp()">Exit</button>
+        </div>
     </div>
 
-    <!-- Main Web App Content (Hidden until verified) -->
-    <div id="app-content" class="card">
-        <h1>Welcome Inside</h1>
-        <p>Your Telegram ID has been verified. You can now access dating feeds, live messaging, and media profiles directly from your chat layout.</p>
-        <button class="btn" onclick="closeApp()">Return to Chat</button>
+    <!-- Main Live App Dashboard -->
+    <div id="app-content" class="screen">
+        <div class="feed-header">
+            <span class="feed-title">✨ Nearby Matches</span>
+            <span style="color: #45f3ff; font-size: 14px; font-weight: bold;" onclick="closeApp()">Close ✕</span>
+        </div>
+
+        <!-- Dynamic Profile Display Structure -->
+        <div class="profile-container">
+            <div class="profile-img-placeholder">
+                <span class="profile-avatar" id="p-avatar">💋</span>
+                <span class="online-badge">Active Now</span>
+            </div>
+            <div class="profile-details">
+                <div class="profile-name" id="p-name">Chloe, 23</div>
+                <div class="profile-bio" id="p-bio">"Looking for someone discreet to text tonight. I love sharing private updates. Tap below to test my responses!"</div>
+                
+                <!-- Explicit Hook Interactions -->
+                <div class="action-grid">
+                    <button class="action-btn" onclick="triggerBotAction('Send a text')">💬 Start Texting</button>
+                    <button class="action-btn" onclick="triggerBotAction('Unlock private photos')">📸 Unlock Pics</button>
+                    <button class="action-btn" onclick="triggerBotAction('Request custom content')">🔑 Custom Request</button>
+                    <button class="action-btn" onclick="triggerBotAction('Send a voice note')">🎙️ Voice Note</button>
+                    <button class="action-btn next-profile-btn" onclick="loadNextProfile()">Next Profile ➔</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Initialize Telegram Web App
+        // Start Telegram Engine Context
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Forces the app to open full screen on your phone
+        tg.expand();
+
+        // Safe Database of Local Profiles
+        const profiles = [
+            { name: "Chloe, 23", bio: '"Looking for someone discreet to text tonight. I love sharing private updates. Tap below to start a chat!"', avatar: "💋" },
+            { name: "Jessica, 25", bio: '"Extremely playful and open-minded. Let\'s exchange dirty secrets or jump on an anonymous prompt feed."', avatar: "🦊" },
+            { name: "Marcus, 24", bio: '"Clean, respectful, and down for intense interactive conversations tonight. What are your boundaries?"', avatar: "⚡" },
+            { name: "Elena, 21", bio: '"Just moved into town. Looking for casual dynamic chat flows or private photo exchanges. Slide into my logs."', avatar: "🍒" }
+        ];
+        let currentProfileIndex = 0;
 
         function verifyAge() {
             document.getElementById('age-gate').style.display = 'none';
-            document.getElementById('app-content').style.display = 'block';
+            document.getElementById('app-content').style.display = 'flex';
+        }
+
+        function loadNextProfile() {
+            currentProfileIndex = (currentProfileIndex + 1) % profiles.length;
+            document.getElementById('p-name').innerText = profiles[currentProfileIndex].name;
+            document.getElementById('p-bio').innerText = profiles[currentProfileIndex].bio;
+            document.getElementById('p-avatar').innerText = profiles[currentProfileIndex].avatar;
+        }
+
+        // MAGIC STEP: Sends a text directly from the user's account back into your Telegram Bot chat
+        function triggerBotAction(actionText) {
+            const currentName = profiles[currentProfileIndex].name.split(',')[0];
+            const botMessage = `I want to: "${actionText}" with ${currentName}`;
+            
+            // This natively closes the app window and sends the chosen string straight to your chat server logic
+            tg.sendData(botMessage);
         }
 
         function closeApp() {
-            tg.close(); // Closes the mobile window and returns to chat
+            tg.close();
         }
     </script>
 </body>
