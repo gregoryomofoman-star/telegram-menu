@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adult Social Network</title>
+    <!-- Include Telegram Web App Script -->
+    <script src="https://telegram.org"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #121212; color: #ffffff; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); max-width: 320px; width: 100%; }
+        h1 { color: #ff4757; font-size: 24px; margin-bottom: 10px; }
+        p { color: #a4b0be; font-size: 14px; line-height: 1.5; }
+        .btn { background: #ff4757; color: white; border: none; padding: 12px 25px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer; width: 100%; margin-top: 20px; transition: 0.2s; }
+        .btn:hover { background: #ff6b81; }
+        #app-content { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Age Gate Screen -->
+    <div id="age-gate" class="card">
+        <h1>🔞 18+ Verification</h1>
+        <p>This application contains adult content, explicit themes, and mature interactions.<br><br>You must be at least 18 years old to proceed.</p>
+        <button class="btn" onclick="verifyAge()">I am 18 or older</button>
+    </div>
+
+    <!-- Main Web App Content (Hidden until verified) -->
+    <div id="app-content" class="card">
+        <h1>Welcome Inside</h1>
+        <p>Your Telegram ID has been verified. You can now access dating feeds, live messaging, and media profiles directly from your chat layout.</p>
+        <button class="btn" onclick="closeApp()">Return to Chat</button>
+    </div>
+
+    <script>
+        // Initialize Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Forces the app to open full screen on your phone
+
+        function verifyAge() {
+            document.getElementById('age-gate').style.display = 'none';
+            document.getElementById('app-content').style.display = 'block';
+        }
+
+        function closeApp() {
+            tg.close(); // Closes the mobile window and returns to chat
+        }
+    </script>
+</body>
+</html>
