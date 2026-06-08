@@ -4,123 +4,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Z Desires</title>
-    <!-- Official Telegram Web App Script -->
     <script src="https://telegram.org"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #0b0c10; color: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        .screen { width: 100%; max-width: 450px; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        /* Card & Styling */
-        .card { background: #1f2833; padding: 25px; border-radius: 20px; border: 1px solid #45f3ff33; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 100%; text-align: center; margin-top: auto; margin-bottom: auto; }
-        h1 { color: #45f3ff; font-size: 26px; margin-bottom: 15px; font-weight: 800; letter-spacing: 1px; }
-        p { color: #c5c6c7; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
-        
-        /* Buttons */
-        .btn { background: linear-gradient(135deg, #45f3ff, #1f2833); color: #0b0c10; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 15px; box-shadow: 0 4px 15px rgba(69, 243, 255, 0.3); transition: transform 0.2s, opacity 0.2s; }
-        .btn-danger { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* Main Dashboard View */
-        #app-content { display: none; width: 100%; max-width: 450px; padding: 15px; }
-        .feed-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1f2833; }
-        .feed-title { font-size: 20px; color: #45f3ff; font-weight: 700; }
-        
-        /* Profile Swiper Box */
-        .profile-container { background: #1f2833; border-radius: 20px; width: 100%; overflow: hidden; border: 1px solid #45f3ff22; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-        .profile-img-placeholder { width: 100%; height: 280px; background: linear-gradient(45deg, #0b0c10, #1f2833); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .profile-avatar { font-size: 70px; margin-bottom: 10px; }
-        .online-badge { position: absolute; top: 15px; right: 15px; background: #2ed573; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-        .profile-details { padding: 20px; text-align: left; }
-        .profile-name { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 5px; }
-        .profile-bio { color: #a4b0be; font-size: 14px; line-height: 1.4; margin-bottom: 15px; }
-        
-        /* Action Layout Grid */
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-        .action-btn { background: #0b0c10; color: #45f3ff; border: 1px solid #45f3ff44; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .action-btn:active { background: #45f3ff11; }
-        .next-profile-btn { grid-column: span 2; background: #45f3ff; color: #0b0c10; font-weight: 700; border: none; margin-top: 5px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #050508; color: #ffffff; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 450px; padding: 15px; display: flex; flex-direction: column; }
+        .promo-banner { width: 100%; background: linear-gradient(135deg, #120e2e, #25123e, #050508); border: 1px solid #bc13fe33; border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 0 20px rgba(188, 19, 254, 0.15); display: flex; flex-direction: column; }
+        .promo-title { font-size: 24px; font-weight: 900; background: linear-gradient(to right, #00f0ff, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; text-transform: uppercase; }
+        .promo-btn { background: linear-gradient(90deg, #ff007f, #bc13fe); color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 25px; font-size: 14px; width: fit-content; }
+        .section-title { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #00f0ff; margin-bottom: 15px; text-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+        .character-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+        .char-card { background: #0d0e15; border-radius: 16px; border: 1px solid #1f2335; overflow: hidden; display: flex; flex-direction: column; }
+        .char-img-container { width: 100%; height: 220px; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+        .char-img-container::after { content: ''; position: absolute; bottom: 0; width: 100%; height: 50%; background: linear-gradient(to top, #0d0e15, transparent); }
+        .tag-new { position: absolute; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.75); color: #00f0ff; border: 1px solid #00f0ff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; z-index: 2; }
+        .char-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .char-name-row { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+        .char-age { color: #888da8; font-weight: 400; font-size: 14px; }
+        .char-bio { font-size: 11px; color: #7a819b; line-height: 1.3; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .chat-action-btn { width: 100%; background: transparent; color: #ff007f; border: 1px solid #ff007f33; padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 8px; text-transform: uppercase; cursor: pointer; text-align: center; }
+        .chat-action-btn:active { background: #ff007f; color: white; }
+        #chat-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050508; z-index: 100; flex-direction: column; }
+        .chat-header { width: 100%; padding: 15px; background: #0d0e15; border-bottom: 1px solid #ff007f33; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(255, 0, 127, 0.1); }
+        .back-btn { color: #00f0ff; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase; }
+        .chat-header-title { font-weight: 800; font-size: 18px; color: #ffffff; }
+        .chat-logs { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 450px; margin: 0 auto; }
+        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        .bubble.bot { background: #121420; color: #f5f5f5; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #1f2335; }
+        .bubble.user { background: linear-gradient(135deg, #ff007f, #bc13fe); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 2px 10px rgba(255, 0, 128, 0.2); }
+        .chat-input-area { width: 100%; padding: 12px; background: #0d0e15; border-top: 1px solid #1f2335; display: flex; justify-content: center; }
+        .input-wrapper { width: 100%; max-width: 430px; display: flex; gap: 8px; }
+        .message-input { flex-grow: 1; background: #121420; border: 1px solid #1f2335; border-radius: 24px; padding: 12px 18px; color: white; font-size: 14px; outline: none; }
+        .message-input:focus { border-color: #00f0ff; }
+        .send-btn { background: #00f0ff; color: #050508; border: none; width: 44px; height: 44px; border-radius: 50%; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
     </style>
 </head>
 <body>
 
-    <!-- 18+ Verification Splash Screen -->
-    <div id="age-gate" class="screen">
-        <div class="card">
-            <h1>🔞 Z Desires</h1>
-            <p>Welcome to your confidential adult sanctuary. This application contains explicit themes, 18+ profile configurations, and mature interactive content.<br><br>By tapping proceed, you certify that you are of legal adult age in your country.</p>
-            <button class="btn" onclick="verifyAge()">I am 18 or older</button>
-            <button class="btn btn-danger" onclick="closeApp()">Exit</button>
+    <!-- Home Tab View Screen Structure Layout -->
+    <div id="home-screen" class="container">
+        <div class="promo-banner">
+            <div class="promo-title">Create your own<br>AI Girlfriend</div>
+            <button class="promo-btn">🪄 Create Now</button>
         </div>
-    </div>
-
-    <!-- Main Live App Dashboard -->
-    <div id="app-content" class="screen">
-        <div class="feed-header">
-            <span class="feed-title">✨ Nearby Matches</span>
-            <span style="color: #45f3ff; font-size: 14px; font-weight: bold;" onclick="closeApp()">Close ✕</span>
-        </div>
-
-        <!-- Dynamic Profile Display Structure -->
-        <div class="profile-container">
-            <div class="profile-img-placeholder">
-                <span class="profile-avatar" id="p-avatar">💋</span>
-                <span class="online-badge">Active Now</span>
+        
+        <div class="section-title">Explore AI Characters</div>
+        
+        <div class="character-grid">
+            <!-- Card 1: Vera -->
+            <div class="char-card">
+                <div class="char-img-container" style="background-image: url('https://picsum.photos');"><span class="tag-new">⚡ New</span></div>
+                <div class="char-info">
+                    <div><div class="char-name-row">Vera <span class="char-age">35</span></div><div class="char-bio">The notorious operative finally tracked you down in the lower neon sectors...</div></div>
+                    <button class="chat-action-btn" onclick="openInternalChat('Vera', 'Hey there... you finally answered my signal. What took you so long?')">Chat Now</button>
+                </div>
             </div>
-            <div class="profile-details">
-                <div class="profile-name" id="p-name">Chloe, 23</div>
-                <div class="profile-bio" id="p-bio">"Looking for someone discreet to text tonight. I love sharing private updates. Tap below to test my responses!"</div>
-                
-                <!-- Explicit Hook Interactions -->
-                <div class="action-grid">
-                    <button class="action-btn" onclick="triggerBotAction('Send a text')">💬 Start Texting</button>
-                    <button class="action-btn" onclick="triggerBotAction('Unlock private photos')">📸 Unlock Pics</button>
-                    <button class="action-btn" onclick="triggerBotAction('Request custom content')">🔑 Custom Request</button>
-                    <button class="action-btn" onclick="triggerBotAction('Send a voice note')">🎙️ Voice Note</button>
-                    <button class="action-btn next-profile-btn" onclick="loadNextProfile()">Next Profile ➔</button>
+            <!-- Card 2: Yuto -->
+            <div class="char-card">
+                <div class="char-img-container" style="background-image: url('https://picsum.photos');"></div>
+                <div class="char-info">
+                    <div><div class="char-name-row">Yuto <span class="char-age">20</span></div><div class="char-bio">Your gorgeous cyber roommate needs somewhere to sleep in your apartment...</div></div>
+                    <button class="chat-action-btn" onclick="openInternalChat('Yuto', 'Hey, roomie! Mind if I crash on your couch tonight? My bedroom setup glitched out.')">Chat Now</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Immersive Messaging Overlay Sheet Area -->
+    <div id="chat-screen">
+        <div class="chat-header">
+            <span class="back-btn" onclick="closeInternalChat()">◀ Back</span>
+            <span id="active-char-name" class="chat-header-title">Character Name</span>
+            <span style="opacity: 0;">Back</span>
+        </div>
+        <div class="chat-logs" id="chat-logs-box"></div>
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                <input type="text" id="user-msg-input" class="message-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendWebMessage()">➔</button>
+            </div>
+        </div>
+    </div>
     <script>
-        // Start Telegram Engine Context
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Safe Database of Local Profiles
-        const profiles = [
-            { name: "Chloe, 23", bio: '"Looking for someone discreet to text tonight. I love sharing private updates. Tap below to start a chat!"', avatar: "💋" },
-            { name: "Jessica, 25", bio: '"Extremely playful and open-minded. Let\'s exchange dirty secrets or jump on an anonymous prompt feed."', avatar: "🦊" },
-            { name: "Marcus, 24", bio: '"Clean, respectful, and down for intense interactive conversations tonight. What are your boundaries?"', avatar: "⚡" },
-            { name: "Elena, 21", bio: '"Just moved into town. Looking for casual dynamic chat flows or private photo exchanges. Slide into my logs."', avatar: "🍒" }
-        ];
-        let currentProfileIndex = 0;
+        let activeCharacter = "";
 
-        function verifyAge() {
-            document.getElementById('age-gate').style.display = 'none';
-            document.getElementById('app-content').style.display = 'flex';
-        }
-
-        function loadNextProfile() {
-            currentProfileIndex = (currentProfileIndex + 1) % profiles.length;
-            document.getElementById('p-name').innerText = profiles[currentProfileIndex].name;
-            document.getElementById('p-bio').innerText = profiles[currentProfileIndex].bio;
-            document.getElementById('p-avatar').innerText = profiles[currentProfileIndex].avatar;
-        }
-
-        // MAGIC STEP: Sends a text directly from the user's account back into your Telegram Bot chat
-        function triggerBotAction(actionText) {
-            const currentName = profiles[currentProfileIndex].name.split(',')[0];
-            const botMessage = `I want to: "${actionText}" with ${currentName}`;
+        // Open Internal Application Container Dialogue Layout
+        function openInternalChat(name, greetingText) {
+            activeCharacter = name;
+            document.getElementById('active-char-name').innerText = name;
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
             
-            // This natively closes the app window and sends the chosen string straight to your chat server logic
-            tg.sendData(botMessage);
+            loadLocalMessages(name, greetingText);
         }
 
-        function closeApp() {
-            tg.close();
+        function closeInternalChat() {
+            document.getElementById('chat-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
+        }
+
+        // Processing Local Phone Browser Storage Elements Histories Free Loop
+        function loadLocalMessages(name, defaultGreeting) {
+            const logsBox = document.getElementById('chat-logs-box');
+            logsBox.innerHTML = ""; 
+            
+            let history = JSON.parse(localStorage.getItem(`chat_${name}`)) || [];
+            
+            if (history.length === 0) {
+                history.push({ sender: 'bot', text: defaultGreeting });
+                localStorage.setItem(`chat_${name}`, JSON.stringify(history));
+            }
+            
+            history.forEach(msg => {
+                appendBubble(msg.sender, msg.text);
+            });
+        }
+
+        function appendBubble(sender, text) {
+            const logsBox = document.getElementById('chat-logs-box');
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${sender}`;
+            bubble.innerText = text;
+            logsBox.appendChild(bubble);
+            logsBox.scrollTop = logsBox.scrollHeight;
+        }
+
+        function sendWebMessage() {
+            const input = document.getElementById('user-msg-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendBubble('user', text);
+            saveMessage(activeCharacter, 'user', text);
+            input.value = "";
+
+            // Isolated Web App Script Output Logic
+            setTimeout(() => {
+                const replyText = `[Z Desires App Mode]: I read your message here inside the Web App system: "${text}". The chat inside this viewport box is fully disconnected from your external Telegram DM chat tracking log!`;
+                appendBubble('bot', replyText);
+                saveMessage(activeCharacter, 'bot', replyText);
+            }, 1000);
+        }
+
+        function saveMessage(name, sender, text) {
+            let history = JSON.parse(localStorage.getItem(`chat_${name}`)) || [];
+            history.push({ sender, text });
+            localStorage.setItem(`chat_${name}`, JSON.stringify(history));
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendWebMessage();
         }
     </script>
 </body>
 </html>
+
